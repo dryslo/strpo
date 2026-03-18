@@ -292,7 +292,8 @@ Fast-forward
  1 file changed, 75 insertions(+), 1 deletion(-)
 ```
 Git выполнил слияние методом Fast-forward (перемотка вперед), так как основная ветка не имела новых коммитов с момента создания ветки `lab1-1`. Указатель ветки master просто переместился на последний коммит ветки `lab1-1`.
-**Изменение заголовка в README.md в основной ветке**
+
+**Изменение заголовка в `README.md` в основной ветке:**
 В файле `README.md` заголовок был изменен.
 ```
 $ git add README.md
@@ -300,3 +301,88 @@ $ git commit -m "change title in master"
 [master 00a8615] change title in master
  1 file changed, 1 insertion(+), 1 deletion(-)
 ```
+**Работа в ветке `lab1-1`:**
+```
+$ git checkout lab1-1
+Switched to branch 'lab1-1'
+```
+В ветке `lab1-1` были внесены следующие изменения: добавлены новые строки в отчет `reports/lab1.md`, заголовок в `README.md` изменен, и в конец `README.md` добавлена строка `Тестирование конфликтов`.
+```
+$ git add README.md
+$ git add reports/lab1.md
+$ git commit -m "update lab1-1 with new title and report data"
+[lab1-1 d4fef8e] update lab1-1 with new title and report data
+ 2 files changed, 48 insertions(+), 2 deletions(-)
+```
+**Попытка слияния ветки `lab1-1` с `master`:**
+```
+$ git checkout master
+$ git merge lab1-1
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+```
+Произошел конфликт слияния (Merge conflict). Git не смог автоматически объединить изменения, так как файл `README.md` был изменен в одном и том же месте (на первой строке с заголовком) в обеих ветках по-разному. Git остановил процесс слияния и просил разрешить конфликт вручную.
+
+Конфликтующие участки выделены маркерами `<<<<<<< HEAD` (текущая ветка master), `=======` (разделитель) и `>>>>>>> lab1-1` (ветка, которую вливаем).
+Конфликт был разрешен вручную: служебные маркеры удалены, оставлен итоговый компромиссный вариант заголовка.
+```
+$ git add README.md
+$ git commit -m "Merge branch 'lab1-1' into master, resolve conflict"
+[master 628e22b] Merge branch 'lab1-1' into master, resolve conflict
+```
+**Удаление ветки `lab1-1`:**
+```
+$ git branch -d lab1-1
+Deleted branch lab1-1 (was d4fef8e).
+```
+## 7. Работа с удаленным репозиторием
+На GitHub был создан пустой приватный репозиторий. Для безопасной аутентификации при взаимодействии с удаленным репозиторием был сгенерирован и настроен SSH-ключ.
+**Добавление и проверка удаленного репозитория:**
+```
+$ git remote add origin git@github.com:dryslo/strpo.git
+$ git remote -v
+origin  git@github.com:dryslo/strpo.git (fetch)
+origin  git@github.com:dryslo/strpo.git (push)
+```
+**Отправка данных в удаленный репозиторий:**
+```
+$ git push -u origin master
+The authenticity of host 'github.com (140.82.121.3)' can't be established.
+ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+Enumerating objects: 22, done.
+Counting objects: 100% (22/22), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (18/18), done.
+Writing objects: 100% (22/22), 5.86 KiB | 117.00 KiB/s, done.
+Total 22 (delta 8), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (8/8), done.
+To github.com:dryslo/strpo.git
+ * [new branch]      master -> master
+branch 'master' set up to track 'origin/master'.
+```
+
+При обновлении web-страницы созданного репозитория на GitHub отобразились все файлы проекта (`README.md`, папка `reports` с файлом `lab1.md`) и полная история коммитов.
+
+## 8. Синхронизация с удаленным репозиторием
+**Клонирование репозитория в новую директорию:**
+```
+$ cd ..
+$ mkdir temp
+$ cd temp
+$ git clone git@github.com:dryslo/strpo.git
+Cloning into 'strpo'...
+remote: Enumerating objects: 22, done.
+remote: Counting objects: 100% (22/22), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 22 (delta 8), reused 22 (delta 8), pack-reused 0 (from 0)
+Receiving objects: 100% (22/22), 5.86 KiB | 316.00 KiB/s, done.
+Resolving deltas: 100% (8/8), done.
+```
+Копия репозитория успешно скачана. Проверка файлов показала, что структура проекта полностью совпадает с оригиналом на GitHub.
+
+В склонированном репозитории в файл отчета были добавлены текущие шаги, создан коммит и отправлен на сервер с помощью команды `git push`.
+
