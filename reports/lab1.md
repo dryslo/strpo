@@ -1,3 +1,4 @@
+# Лабораторная работа №1. Базовая работа с git
 ### Основные команды Git
 
 Вывод команды `git --help` группирует основные команды по их назначению:
@@ -181,3 +182,76 @@ index c9aa2c0..78d509a 100644
 \ No newline at end of file
 ```
 Команда вывела изменения только для одного конкретного файла, игнорируя остальные.
+
+**Коммит только файла отчета:**
+```
+$ git add reports/lab1.md
+$ git commit -m "update lab1 report without readme"
+[master 3b7b714] update lab1 report without readme
+ 1 file changed, 74 insertions(+), 1 deletion(-)
+```
+Был закоммичен только 1 файл, так как только он находился в индексе. Изменения в `README.md` остались незакоммиченными (остались в рабочей директории).
+
+## 4. Откат изменений
+
+**Проверка изменений в файле `README.md`:**
+```
+$ git diff --stat README.md
+ README.md | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+```
+**Откат изменений в файле `README.md`:**
+```
+$ git restore README.md
+$ cat README.md
+# Лабораторные работы по дисциплине "Современные технологии разработки ПО"
+## *Студент*: Светличный Сергей
+## *Группа*: 5130201/50302
+```
+
+**Удаление файла, проверка статуса и восстановление**
+```
+$ rm reports/lab1.md
+$ tree
+.
+├── README.md        
+└── reports
+
+2 directories, 1 file
+```
+Файл был успешно удален.
+```
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        deleted:    reports/lab1.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+Git видит, что файл, который он отслеживал, был удален из рабочей директории, но это изменение (само удаление) еще не подготовлено к коммиту.
+```
+$ git restore reports/lab1.md
+$ tree
+.
+├── README.md
+└── reports
+    └── lab1.md
+
+2 directories, 2 files
+```
+Удаленный файл успешно восстановлен в рабочей директории.
+
+## 5. Ветвление версий
+
+**Проверка текущей ветки:**
+```
+$ git branch
+* master
+```
+**Создание новой ветки и переключение на нее:**
+```
+$ git checkout -b lab1-1
+Switched to a new branch 'lab1-1'
+```
