@@ -108,3 +108,76 @@ $ git add README.md
 **Создание первого коммита:**
 ```
 $ git commit -m "init commit"
+[master 5a0cb0a] init commit
+ Date: Wed Mar 18 19:14:29 2026 +0300
+ 2 files changed, 113 insertions(+)
+ create mode 100644 README.md      
+ create mode 100644 reports/lab1.md
+```
+
+## 3. Отслеживание состояния кода
+
+**Команды status и diff:**
+* `git status` — показывает текущее состояние рабочей директории и индекса (какие файлы изменены, добавлены или готовы к коммиту).
+* `git diff` — показывает конкретные изменения в файлах (разницу между рабочей директорией и индексом или последним коммитом).
+
+```text
+$ git status
+On branch main
+nothing to commit, working tree clean
+
+$ git diff
+```
+**После переноса заметок в отчет:**
+```
+$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   reports/lab1.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+```
+$ git diff
+diff --git a/reports/lab1.md b/reports/lab1.md
+index 537aa64..0079375 100644
+--- a/reports/lab1.md
++++ b/reports/lab1.md
+@@ -107,4 +107,25 @@ $ git add README.md
+```
+Git увидел, что отслеживаемый файл изменен. Поскольку изменения не добавлены в индекс, в status он красный, а diff показывает конкретные добавленные строки.
+
+**Добавление изменений в индекс**
+```
+$ git add reports/lab1.md
+```
+
+```
+$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   reports/lab1.md
+```
+Файл отчета перенесен в индекс. Теперь он подготовлен к коммиту.
+
+**Изменения в `README.md`:**
+В файле `README.md` была добавлена строка `Изменение в файле readme`
+```
+$ git diff README.md
+diff --git a/README.md b/README.md
+index c9aa2c0..78d509a 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,4 @@
+ # Лабораторные работы по дисциплине "Современные технологии разработки ПО"
+ ## *Студент*: Светличный Сергей
+-## *Группа*: 5130201/50302
+\ No newline at end of file
++## *Группа*: 5130201/50302^M
++Изменение в файле readme
+\ No newline at end of file
+```
+Команда вывела изменения только для одного конкретного файла, игнорируя остальные.
