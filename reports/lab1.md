@@ -386,3 +386,59 @@ Resolving deltas: 100% (8/8), done.
 
 В склонированном репозитории в файл отчета были добавлены текущие шаги, создан коммит и отправлен на сервер с помощью команды `git push`.
 
+```
+$ cd strpo
+$ git add reports/lab1.md
+$ git commit -m "add remote sync protocol"
+[master b7e5681] add remote sync protocol
+ 1 file changed, 87 insertions(+), 1 deletion(-)
+$ git push
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (4/4), 2.52 KiB | 184.00 KiB/s, done.
+Total 4 (delta 1), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To github.com:dryslo/strpo.git
+   628e22b..b7e5681  master -> master
+```
+**Возврат в исходный репозиторий и получение обновлений:**
+```
+$ cd ..
+$ cd ..
+$ git fetch
+remote: Enumerating objects: 7, done.
+remote: Counting objects: 100% (7/7), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 4 (delta 1), reused 4 (delta 1), pack-reused 0 (from 0)
+Unpacking objects: 100% (4/4), 2.50 KiB | 50.00 KiB/s, done.
+From github.com:dryslo/strpo
+   628e22b..b7e5681  master     -> origin/master
+```
+Команда `fetch` обратилась к удаленному репозиторию (`origin`) и скачала информацию о новых коммитах, которых еще нет в локальном репозитории. В данном случае она увидела, что на сервере появился новый коммит от склонированной версии. Важно отметить, что fetch не изменяет рабочую директорию и сами файлы проекта, а лишь скачивает данные и обновляет скрытые указатели (в данном случае `origin`/`master`).
+
+**Синхронизация локальной ветки с удаленной:**
+```
+$ git pull
+Updating 628e22b..b7e5681
+Fast-forward
+ reports/lab1.md | 88 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 87 insertions(+), 1 deletion(-)
+```
+Команда `git pull` работает как комбинация `git fetch` и `git merge`. Она скачала новые данные и сразу же применила их к текущей локальной ветке методом "перемотки вперед" (Fast-forward). Теперь изначальный локальный репозиторий полностью синхронизирован с удаленным, и в файле отчета появились строки, написанные в другой папке.
+
+## 9. История изменений
+**Просмотр истории коммитов (краткий древовидный вид):**
+```
+$ git log --graph --oneline --all
+* b7e5681 (HEAD -> master, origin/master) add remote sync protocol
+*   628e22b Merge branch 'lab1-1' into master, resolve conflict
+|\
+| * d4fef8e update lab1-1 with new title and report data
+* | 00a8615 change title in master
+|/
+* 831c4fa add report updates to new branch
+* 3b7b714 update lab1 report without readme
+* 5a0cb0a init commit
+```
